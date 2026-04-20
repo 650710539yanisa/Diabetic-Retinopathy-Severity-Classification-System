@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% block title %}Patients{% endblock %}
+
+{% block content %}
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+    <h1 class="page-title">Patients</h1>
+
+
+</div>
+
+<!-- ===== FILTER BAR ===== -->
+<div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search by HN / Name">
+
+    <select id="dateFilter">
+        <option value="">Date Filter</option>
+        <option value="today">Today</option>
+        <option value="month">This Month</option>
+        <option value="year">This Year</option>
+    </select>
+    <div class="bottom-action">
+        <button class="btn secondary"
+                onclick="window.location.href='{{ url_for('auth.new_patient') }}'">
+            + Add Patient
+        </button>
+    </div>
+</div>
+
+
+
+<!-- ===== PATIENT TABLE ===== -->
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>HN</th>
+            <th>Name</th>
+            <!-- ===== <th>Age</th>
+            <th>Last Result</th> ===== -->
+            <th>Last Visit</th>
+            <th>View</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for p in patients %}
+        <tr class="patient-row"
+            data-date="{{ p.last_visit if p.last_visit else '' }}">
+
+            <td>{{ p.hn }}</td>
+            <td>{{ p.name }}</td>
+
+            <td>
+                {% if p.last_visit %}
+                    {{ p.last_visit[:10] }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{{ url_for('auth.patient_detail', hn=p.hn) }}"
+                   class="icon-btn">🔍</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+// ===== SELECT ELEMENTS =====
+const searchInput = document.getElementById("searchInput");
+const dateFilter = document.getElementById("dateFilter");
+const rows = document.querySelectorAll(".patient-row");
+
+// ===== FILTER FUNCTION =====
+function filterTable() {
+
+    const search = searchInput.value.toLowerCase();
+    const dateOption = dateFilter.value;
+
+    const today = new Date();
+
+    rows.forEach(row => {
+
+        const hn = row.children[0].innerText.toLowerCase();
+        const name = row.children[1].innerText.toLowerCase();
+        const dateStr = row.dataset.date;
+
+        // ===== SEARCH =====
+        let matchSearch = hn.includes(search) || name.includes(search);
+
+        // ===== DATE FILTER =====
+        let matchDate = true;
+
+        if (dateOption && dateStr) {
+
+            const rowDate = new Date(dateStr);
+
+            if (dateOption === "today") {
+                matchDate =
+                    rowDate.toDateString() === today.toDateString();
+            }
+
+            if (dateOption === "month") {
+                matchDate =
+                    rowDate.getMonth() === today.getMonth() &&
+                    rowDate.getFullYear() === today.getFullYear();
+            }
+
+            if (dateOption === "year") {
+                matchDate =
+                    rowDate.getFullYear() === today.getFullYear();
+            }
+        }
+
+        // ===== SHOW / HIDE =====
+        if (matchSearch && matchDate) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+}
+
+// ===== EVENTS =====
+searchInput.addEventListener("keyup", filterTable);
+dateFilter.addEventListener("change", filterTable);
+</script>
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+{% block title %}New Prediction{% endblock %}
+
+{% block content %}
+
+
+<div class="page-header">
+    <h1 class="header-title">
+        <span class="eye-icon">👁️</span>
+        {{ patient.name if patient else "Unknown Patient" }}
+
+    </h1>
+
+
+</div>
+<input type="hidden" id="patient-hn"
+       value="{{ patient.hn if patient else '' }}">
+<div class="main-wrapper">
+
+<div class="container">
+
+    <!-- LOGIN/GUEST POPUP -->
+
+
+
+    <!-- LEFT SIDE: UPLOAD SECTION -->
+    <div class="left-box">
+
+        <h2 class="section-title">Upload Retinal Image</h2>
+
+        <label class="upload-area">
+            <input type="file" id="img" accept="image/*" hidden>
+            <p class="upload-text">Drag and drop or click to select a file (jpg/png)</p>
+            <p class="upload-sub">High-quality images (non-blurry) provide more accurate results</p>
+        </label>
+
+        <div class="eye-select">
+            <label>
+                <input type="radio" name="eye" value="left" required>
+                👁️ Left Eye
+            </label>
+            <label>
+                <input type="radio" name="eye" value="right">
+                👁️ Right Eye
+            </label>
+        </div>
+
+        <div id="preview-container" class="preview-container" style="display: none;">
+            <h3 class="preview-title">Preview</h3>
+            <img id="preview" class="preview-img" src="">
+        </div>
+
+        <div class="button-row">
+            <button class="btn predict-btn" onclick="sendImage()">Predict</button>
+            <button class="btn clear-btn" onclick="clearImage()">Clear</button>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: RESULTS -->
+    <div class="right-box">
+        <div class="result-header-row">
+            <h2 class="section-title">Result</h2>
+<!--            <h2 class="section-title">Prediction Probability (%)</h2>-->
+        </div>
+
+        <div id="result" class="result-box">
+            No results yet — Upload an image and click “Predict”
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+<!-- DR INFORMATION BOX -->
+<div class="dr-info-box">
+
+    <div class="dr-item dr-no">
+        <h3>No DR</h3>
+        <p>ไม่พบความผิดปกติของจอตาหรือหลอดเลือด ไม่มีสัญญาณของภาวะเบาหวานขึ้นจอตา</p>
+    </div>
+
+    <div class="dr-item dr-mild">
+        <h3>Mild NPDR</h3>
+        <img src="{{ url_for('static', filename='images/1.png') }}" alt="Mild NPDR illustration" class="dr-img">
+        <p>พบการโป่งพองของหลอดเลือดฝอยขนาดเล็ก (Microaneurysms) ซึ่งเป็นสัญญาณแรกของโรค</p>
+    </div>
+
+    <div class="dr-item dr-moderate">
+        <h3>Moderate NPDR</h3>
+        <img src="{{ url_for('static', filename='images/2.png') }}" alt="Moderate NPDR illustration" class="dr-img">
+        <ul>
+            <li>Microaneurysms</li>
+            <li>Retinal dot or blot haemorrhages</li>
+            <li>Hard exudates หรือ cotton wool spots</li>
+        </ul>
+        <p>ยังไม่เข้าเกณฑ์ Severe NPDR</p>
+    </div>
+
+    <div class="dr-item dr-severe">
+        <h3>Severe NPDR</h3>
+        <img src="{{ url_for('static', filename='images/3.png') }}" alt="Severe NPDR illustration" class="dr-img">
+        <ul>
+            <li>Intraretinal haemorrhages > 20 จุด ในทั้ง 4 quadrants</li>
+            <li>Venous beading ชัดเจนใน ≥ 2 quadrants</li>
+            <li>IRMA เด่นชัดใน ≥ 1 quadrant</li>
+        </ul>
+        <p>ยังไม่พบเส้นเลือดใหม่</p>
+    </div>
+
+    <div class="dr-item dr-pdr">
+        <h3>Proliferative DR (PDR)</h3>
+        <img src="{{ url_for('static', filename='images/4.png') }}" alt="Proliferative DR illustration" class="dr-img">
+        <ul>
+            <li>การสร้างเส้นเลือดใหม่ (Neovascularisation)</li>
+            <li>เลือดออกในวุ้นตาหรือหน้าจอตา (Vitreous / Pre-retinal haemorrhage)</li>
+        </ul>
+    </div>
+
+</div>
+
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" class="loading-overlay" style="display:none;">
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <p>Analyzing retinal image…<br>Please wait</p>
+    </div>
+</div>
+
+{% endblock %}

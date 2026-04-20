@@ -1,0 +1,200 @@
+{% extends "layout.html" %}
+{% block title %}Patient Detail{% endblock %}
+{% block content %}
+
+<div class="patient-detail-container">
+
+    <!-- ===== HEADER ===== -->
+    <div class="patient-header-box">
+
+    <!-- EDIT BUTTON TOP RIGHT -->
+    <a href="{{ url_for('auth.edit_patient', hn=patient.hn) }}"
+       class="btn warning edit-top-btn">
+        ✏️ Edit
+    </a>
+
+    <h1>
+        {{ patient.name }} (HN: {{ patient.hn }})
+    </h1>
+
+    <p>
+        DOB: {{ patient.date_of_birth }} |
+        Gender: {{ patient.gender }} |
+        Last Predict: {{ patient.last_prediction_at or "-" }}
+    </p>
+
+    <div class="patient-actions">
+
+        <a href="{{ url_for('auth.patients') }}"
+           class="btn secondary back-btn">
+            ← Back
+        </a>
+
+        <a href="{{ url_for('auth.new_prediction', hn=patient.hn) }}"
+           class="btn primary new-btn">
+            ➕ New Prediction
+        </a>
+
+    </div>
+
+</div>
+
+
+
+    <!-- ===== DIABETES PROFILE ===== -->
+    <div class="profile-card">
+
+        <h3>🩺 Diabetes Profile</h3>
+
+        {% if diabetes %}
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span>Type</span>
+                <h4>{{ diabetes.diabetes_type }}</h4>
+            </div>
+
+            <div class="info-item">
+                <span>Duration</span>
+                <h4>
+                    {{ diabetes.duration_years }}
+                    {{ "year" if diabetes.duration_years == 1 else "years" }}
+                </h4>
+            </div>
+
+            <div class="info-item">
+                <span>HbA1c</span>
+                <h4>{{ diabetes.hba1c or "-" }} %</h4>
+            </div>
+
+            <div class="info-item">
+                <span>FBS</span>
+                <h4>{{ diabetes.fbs or "-" }}</h4>
+            </div>
+
+            <div class="info-item">
+                <span>RBS</span>
+                <h4>{{ diabetes.rbs or "-" }}</h4>
+            </div>
+
+            <div class="info-item">
+                <span>BP</span>
+                <h4>{{ diabetes.blood_pressure or "-" }}</h4>
+            </div>
+
+        </div>
+
+
+<!--        <h4>💊 Treatment</h4>-->
+
+<!--        <p>-->
+<!--            Insulin :-->
+<!--            <span class="{{ 'badge-yes' if diabetes.insulin else 'badge-no' }}">-->
+<!--                {{ "Yes" if diabetes.insulin else "No" }}-->
+
+<!--            </span>-->
+
+
+<!--            Oral :-->
+<!--            <span class="{{ 'badge-yes' if diabetes.oral_drug else 'badge-no' }}">-->
+<!--                {{ "Yes" if diabetes.oral_drug else "No" }}-->
+<!--            </span>-->
+<!--        </p>-->
+
+
+<!--        <h4>📌 Comorbidities</h4>-->
+
+<!--        <div class="disease-grid">-->
+
+<!--            <div class="disease-item">-->
+<!--                Dyslipidemia : {{ "Yes" if diabetes.dyslipidemia else "No" }}-->
+<!--            </div>-->
+
+<!--            <div class="disease-item">-->
+<!--                Kidney Disease : {{ "Yes" if diabetes.kidney_disease else "No" }}-->
+<!--            </div>-->
+
+<!--            <div class="disease-item">-->
+<!--                Hypertension : {{ "Yes" if diabetes.hypertension else "No" }}-->
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        {% else %}-->
+
+<!--        <p style="color:gray;">No diabetes data</p>-->
+
+<!--        {% endif %}-->
+<!--    </div>-->
+
+<!-- ===== PREDICTION HISTORY ===== -->
+<div class="card" style="margin-top:30px;">
+    <h3>Prediction History</h3>
+
+    {% if history|length == 0 %}
+        <p class="no-history">No prediction history found.</p>
+    {% else %}
+
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Result</th>
+                <th>Confidence</th>
+                <th>Model</th>
+                <th>Doctor Choice</th>
+                <th>Eye</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for row in history %}
+            <tr>
+                <td>{{ loop.index }}</td>
+
+                <td>
+                    <img src="{{ url_for('static', filename=row.image_path.replace('static/', '')) }}"
+                         class="history-img"
+                         alt="Retinal image">
+                </td>
+
+                <td>
+                    <span class="badge {{ row.result|lower }}">
+                        {{ row.result }}
+                    </span>
+                </td>
+
+                <td>{{ "%.4f"|format(row.confidence) }}</td>
+
+                <td>{{ row.model_name }}</td>
+
+                <td>
+                {% if row.doctor_choice %}
+                    ⭐ {{ row.doctor_choice }} ({{ "%.4f"|format(row.confidence) }})
+                {% else %}
+                    -
+                {% endif %}
+                </td>
+
+                <td>
+                    {% if row.eye %}
+                        👁️ {{ row.eye|capitalize }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>{{ row.created_at | thai_time }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endif %}
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<div class="summary-grid">
+
+    <div class="summary-card">
+        <p>Total Patients</p>
+        <h2>{{ total_patients }}</h2>
+    </div>
+
+    <div class="summary-card">
+        <p>Predictions Today</p>
+        <h2>{{ today_predictions }}</h2>
+    </div>
+
+</div>
+
+{% endblock %}

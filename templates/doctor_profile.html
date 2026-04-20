@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Doctor Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+
+    <h1>👨‍⚕️ Doctor Profile</h1>
+
+    {% if doctor %}
+        <div class="profile-card">
+            <p><strong>Full Name:</strong> {{ doctor.full_name }}</p>
+            <p><strong>Hospital:</strong> {{ doctor.hospital }}</p>
+            <p><strong>License No:</strong> {{ doctor.license_no }}</p>
+            <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+        </div>
+    {% else %}
+        <p>❌ No profile found</p>
+    {% endif %}
+
+</div>
+{% endblock %}

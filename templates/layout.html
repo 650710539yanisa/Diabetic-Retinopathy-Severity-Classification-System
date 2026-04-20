@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}DR RMS{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+        <h2 class="logo">
+            <a href="{{ url_for('auth.doctor_profile') }}" style="text-decoration:none; color:inherit;">
+                DR. {{ session.get('full_name') }}
+            </a>
+        </h2>
+
+        <nav class="menu">
+            <a href="{{ url_for('auth.dashboard') }}" class="menu-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('auth.patients') }}" class="menu-item">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Patients</span>
+            </a>
+
+            <a href="{{ url_for('auth.logout') }}" class="menu-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+<!-- ✅ GLOBAL JS -->
+<script src="/static/script.js"></script>
+
+<!-- ✅ PAGE-SPECIFIC JS -->
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

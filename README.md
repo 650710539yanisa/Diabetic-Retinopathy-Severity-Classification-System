@@ -10,8 +10,8 @@ A web-based application for classifying the severity of **Diabetic Retinopathy (
 
 ---
 
-![DR1](./Diabetic-Retinopathy-Severity-Classification-System/dr1.png)
+![DR1](./dr1.png)
 
-![DR2](./Diabetic-Retinopathy-Severity-Classification-System/dr2.png)
+![DR2](./dr2.png)
 
-![DR3](./Diabetic-Retinopathy-Severity-Classification-System/dr3.png)
+![DR3](./dr3.png)
